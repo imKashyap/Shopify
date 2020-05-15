@@ -4,9 +4,11 @@ import 'package:shopify/providers/cart.dart';
 import 'package:shopify/providers/orders.dart';
 import 'package:shopify/providers/products.dart';
 import 'package:shopify/screens/cart_screen.dart';
+import 'package:shopify/screens/editProductScreen.dart';
 import 'package:shopify/screens/order_screen.dart';
 import 'package:shopify/screens/product_detail_screen.dart';
 import 'package:shopify/screens/products_overview_screen.dart';
+import 'package:shopify/screens/user_products_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -32,6 +34,8 @@ class MyApp extends StatelessWidget {
           ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
           CartScreen.routeName: (ctx) => CartScreen(),
           OrdersScreen.routeName: (ctx)=>OrdersScreen(),
+          UserProductsScreen.routeName:(ctx)=>UserProductsScreen(),
+          EditProductScreen.routeName:(ctx)=>EditProductScreen(),
         },
       ),
     );
