@@ -24,6 +24,23 @@ class ProductsOverviewScreen extends StatefulWidget {
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   bool showFavs = false;
+  bool _isInit = true;
+  bool _isLoading = false;
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<Products>(context).fetchAndSetProduct().then((value) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,41 +55,45 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
               setState(() {
                 if (selectedValue == filterOptions.Favorites) {
                   showFavs = true;
-                }
-                else {
+                } else {
                   showFavs = false;
                 }
               });
             },
-            itemBuilder: (BuildContext context) =>
-            [
+            itemBuilder: (BuildContext context) => [
               PopupMenuItem(
-                child: Text('Show Favorites',),
-                value: filterOptions.Favorites,),
-              PopupMenuItem(child: Text('Show All'),
-                value: filterOptions.All,)
+                child: Text(
+                  'Show Favorites',
+                ),
+                value: filterOptions.Favorites,
+              ),
+              PopupMenuItem(
+                child: Text('Show All'),
+                value: filterOptions.All,
+              )
             ],
           ),
           Consumer<Cart>(
             builder: (BuildContext context, Cart value, Widget ch) =>
-                IconButton(icon: Badge(
-                  value:value.itemOnCartCount.toString(),
-                  child: ch,
-                ),
-                  onPressed: () {
-                  Navigator.of(context).pushNamed(CartScreen.routeName);
-                  },),
+                IconButton(
+              icon: Badge(
+                value: value.itemOnCartCount.toString(),
+                child: ch,
+              ),
+              onPressed: () {
+                Navigator.of(context).pushNamed(CartScreen.routeName);
+              },
+            ),
             child: Icon(Icons.shopping_cart),
           ),
         ],
       ),
       drawer: AppDrawer(),
-      body:
-      ProductGrid
-        (
-          showFavs
-      )
-      ,
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ProductGrid(showFavs),
     );
   }
 }
@@ -85,8 +106,8 @@ class ProductGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Products products = Provider.of<Products>(context);
-    final List<Product> visibleProducts = !showFavs ? products.items : products
-        .favoriteItems;
+    final List<Product> visibleProducts =
+        !showFavs ? products.items : products.favoriteItems;
     return GridView.builder(
       padding: const EdgeInsets.all(10.0),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -95,8 +116,7 @@ class ProductGrid extends StatelessWidget {
         crossAxisSpacing: 10.0,
         childAspectRatio: 1.5,
       ),
-      itemBuilder: (ctx, index) =>
-      ChangeNotifierProvider<Product>.value(
+      itemBuilder: (ctx, index) => ChangeNotifierProvider<Product>.value(
         value: visibleProducts[index],
         child: ProductItem(),
       ),
