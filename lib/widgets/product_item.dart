@@ -8,7 +8,6 @@ class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
-    final cart = Provider.of<Cart>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10.0),
       child: GridTile(
@@ -25,32 +24,36 @@ class ProductItem extends StatelessWidget {
         footer: GridTileBar(
           leading: Consumer<Product>(
             builder: (ctx, product, child) => IconButton(
-              icon: Icon(
-                  product.isFavorite ? Icons.favorite : Icons.favorite_border),
-              color: Theme.of(context).accentColor,
-              onPressed: () => product.toggleFavoriteStatus(),
-            ),
+                icon: Icon(product.isFavorite
+                    ? Icons.favorite
+                    : Icons.favorite_border),
+                color: Theme.of(context).accentColor,
+                onPressed: () async {
+                  await product.toggleFavoriteStatus();
+                }),
           ),
           backgroundColor: Colors.black87,
           title: Text(product.title),
           trailing: Consumer<Cart>(
-            builder: (ctx,cart,child)=>IconButton(
-            icon: Icon(cart.isInCart(product.id)?Icons.shopping_cart:Icons.add_shopping_cart),
-            color: Theme.of(context).accentColor,
-            onPressed: () {
-              cart.addItemToCart(product.id, product.title, product.price);
-              Scaffold.of(context).hideCurrentSnackBar();
-              Scaffold.of(context).showSnackBar(SnackBar(
-                content: Text('Item added to cart'),
-                action: SnackBarAction(
-                  label:'UNDO',
-                  onPressed: (){
-                    cart.removeThisItem(product.id);
-                  },
-                ),
-              ));
-            },
-          ),
+            builder: (ctx, cart, child) => IconButton(
+              icon: Icon(cart.isInCart(product.id)
+                  ? Icons.shopping_cart
+                  : Icons.add_shopping_cart),
+              color: Theme.of(context).accentColor,
+              onPressed: () {
+                cart.addItemToCart(product.id, product.title, product.price);
+                Scaffold.of(context).hideCurrentSnackBar();
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text('Item added to cart'),
+                  action: SnackBarAction(
+                    label: 'UNDO',
+                    onPressed: () {
+                      cart.removeThisItem(product.id);
+                    },
+                  ),
+                ));
+              },
+            ),
           ),
         ),
       ),

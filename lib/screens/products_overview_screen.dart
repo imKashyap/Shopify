@@ -89,12 +89,16 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
         ],
       ),
       drawer: AppDrawer(),
-      body: _isLoading
+      body:RefreshIndicator(child: _isLoading
           ? Center(
               child: CircularProgressIndicator(),
             )
           : ProductGrid(showFavs),
+       onRefresh: () => _refreshProducts(context),),
     );
+  }
+  Future<void> _refreshProducts(BuildContext context) async {
+    await Provider.of<Products>(context,listen:false).fetchAndSetProduct();
   }
 }
 

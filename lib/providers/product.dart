@@ -1,6 +1,9 @@
-import 'package:flutter/foundation.dart';
+import 'dart:convert';
 
-class Product extends ChangeNotifier{
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+
+class Product extends ChangeNotifier {
   final String id;
   final String title;
   final String description;
@@ -14,10 +17,24 @@ class Product extends ChangeNotifier{
       @required this.description,
       @required this.price,
       @required this.imageUrl,
-      this.isFavorite = false});
+      @required this.isFavorite });
 
-  void toggleFavoriteStatus(){
-    isFavorite=!isFavorite;
-    notifyListeners();
+  Future<void> toggleFavoriteStatus() async {
+    try {
+      final String url =
+          'https://shopify-e3c1a.firebaseio.com/products/$id.json';
+      isFavorite = !isFavorite;
+      final response=await http.patch(
+        url,
+        body: json.encode({'isFavorite': isFavorite}),
+      );
+      if(response.statusCode>=400)isFavorite = !isFavorite;
+      notifyListeners();
+    } catch (error) {
+      isFavorite = !isFavorite;
+      print(error);
+      notifyListeners();
+      throw error;
+    }
   }
 }
