@@ -13,13 +13,13 @@
  
 | Screens | Screenshots |
 | --------| ----------- |
-| Authentication Screen | <img src="screenshots/auth.png" width=200 alt="Authentication Screen">|
-| Products Overview Screen | <img src="screenshots/products.png" width=200 alt="Products Overview Screen">|
-| Products Detail Screen | <img src="screenshots/details.png" width=200 alt="Products Detail Screen">|
-| Cart Screen | <img src="screenshots/cart.png" width=200 alt="Cart Screen">|
-| Orders Screen | <img src="screenshots/orders.png" width=200 alt="Orders Screen">|
-| Admin's Products Screen | <img src="screenshots/admin.png" width=200 alt="Admin's Products Screen">|
-| Edit/Add Products Screen | <img src="screenshots/edit.png" width=200 alt="Edit/Add Products Screen">|
+| Authentication Screen | <img src="screenshots/auth.png" width=400 alt="Authentication Screen">|
+| Products Overview Screen | <img src="screenshots/products.png" width=400 alt="Products Overview Screen">|
+| Products Detail Screen | <img src="screenshots/details.png" width=400 alt="Products Detail Screen">|
+| Cart Screen | <img src="screenshots/cart.png" width=400 alt="Cart Screen">|
+| Orders Screen | <img src="screenshots/orders.png" width=400 alt="Orders Screen">|
+| Admin's Products Screen | <img src="screenshots/admin.png" width=400 alt="Admin's Products Screen">|
+| Edit/Add Products Screen | <img src="screenshots/edit.png" width=400 alt="Edit/Add Products Screen">|
 
 ## Getting Started
 
