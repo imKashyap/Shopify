@@ -17,16 +17,16 @@ class Product extends ChangeNotifier {
       @required this.description,
       @required this.price,
       @required this.imageUrl,
-      @required this.isFavorite });
+      this.isFavorite=false});
 
-  Future<void> toggleFavoriteStatus() async {
+  Future<void> toggleFavoriteStatus(String token,String userId) async {
     try {
       final String url =
-          'https://shopify-e3c1a.firebaseio.com/products/$id.json';
+          'https://shopify-e3c1a.firebaseio.com/userFavorites/$userId/$id.json?auth=$token';
       isFavorite = !isFavorite;
-      final response=await http.patch(
+      final response=await http.put(
         url,
-        body: json.encode({'isFavorite': isFavorite}),
+        body: json.encode(isFavorite),
       );
       if(response.statusCode>=400)isFavorite = !isFavorite;
       notifyListeners();

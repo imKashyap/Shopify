@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shopify/screens/editProductScreen.dart';
+import 'package:shopify/screens/edit_Product_Screen.dart';
 
 import '../providers/products.dart';
 

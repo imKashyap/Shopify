@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shopify/models/exception.dart';
 
 import './product.dart';
 
@@ -42,6 +43,14 @@ class Products with ChangeNotifier {
   // ];
   // var _showFavoritesOnly = false;
 
+  String authToken;
+  String userId;
+  void update(String _authToken, String _userId, List<Product> allItems) {
+    authToken = _authToken;
+    userId = _userId;
+    _items = allItems;
+  }
+
   List<Product> get items {
     // if (_showFavoritesOnly) {
     //   return _items.where((prodItem) => prodItem.isFavorite).toList();
@@ -68,7 +77,8 @@ class Products with ChangeNotifier {
   // }
 
   Future<void> addProduct(Product product) async {
-    const url = 'https://shopify-e3c1a.firebaseio.com/products.json';
+    final url =
+        'https://shopify-e3c1a.firebaseio.com/products.json?auth=$authToken';
     try {
       final response = await http.post(
         url,
@@ -77,14 +87,12 @@ class Products with ChangeNotifier {
           'description': product.description,
           'imageUrl': product.imageUrl,
           'price': product.price,
-          'isFavorite': false,
         }),
       );
       final newProduct = Product(
         title: product.title,
         description: product.description,
         price: product.price,
-        isFavorite: false,
         imageUrl: product.imageUrl,
         id: json.decode(response.body)['name'],
       );
@@ -98,12 +106,17 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProduct() async {
-    const url = 'https://shopify-e3c1a.firebaseio.com/products.json';
+    final url =
+        'https://shopify-e3c1a.firebaseio.com/products.json?auth=$authToken';
     try {
       final response = await http.get(url);
+      final favoriteUrl =
+          'https://shopify-e3c1a.firebaseio.com/userFavorites/$userId.json?auth=$authToken';
+      final favoriteResponse = await http.get(favoriteUrl);
+      final favoriteValue = json.decode(favoriteResponse.body);
       final extractedProducts =
           json.decode(response.body) as Map<String, dynamic>;
-      if(extractedProducts==null)return;
+      if (extractedProducts == null) return;
       List<Product> loadedProducts = [];
       extractedProducts.forEach((prodId, prodData) {
         loadedProducts.add(Product(
@@ -111,7 +124,7 @@ class Products with ChangeNotifier {
             description: prodData['description'],
             price: prodData['price'],
             title: prodData['title'],
-            isFavorite: prodData['isFavorite'],
+            isFavorite: favoriteValue==null?false:favoriteValue[prodId]??false,
             imageUrl: prodData['imageUrl']));
       });
       _items = loadedProducts;
@@ -123,7 +136,8 @@ class Products with ChangeNotifier {
   }
 
   Future<void> updateProduct(String id, Product newProduct) async {
-    final url = 'https://shopify-e3c1a.firebaseio.com/products/$id.json';
+    final url =
+        'https://shopify-e3c1a.firebaseio.com/products/$id.json?auth=$authToken';
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     if (prodIndex >= 0) {
       await http.patch(
@@ -143,7 +157,8 @@ class Products with ChangeNotifier {
   }
 
   Future<void> deleteProduct(String id) async {
-    final String url = 'https://shopify-e3c1a.firebaseio.com/products/$id.json';
+    final String url =
+        'https://shopify-e3c1a.firebaseio.com/products/$id.json?auth=$authToken';
     final existingProductIndex =
         _items.indexWhere((element) => element.id == id);
     Product existingProduct = _items[existingProductIndex];
@@ -156,15 +171,5 @@ class Products with ChangeNotifier {
       throw HttpException('Could not delete item');
     }
     existingProduct = null;
-  }
-}
-
-class HttpException implements Exception {
-  final String message;
-  const HttpException(this.message);
-
-  @override
-  String toString() {
-    return message;
   }
 }

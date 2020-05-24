@@ -25,8 +25,17 @@ class Order extends ChangeNotifier {
     return [..._orders];
   }
 
+  String userId;
+  String authToken;
+  void update(String token, String _userId, List<OrderItem> userOrders) {
+    authToken = token;
+    _orders = userOrders;
+    userId = _userId;
+  }
+
   Future<void> addOrders(List<CartItem> products, double amount) async {
-    const url = 'https://shopify-e3c1a.firebaseio.com/orders.json';
+    final url =
+        'https://shopify-e3c1a.firebaseio.com/orders/$userId.json?auth=$authToken';
     try {
       final timeStamp = DateTime.now();
       final response = await http.post(url,
@@ -58,11 +67,12 @@ class Order extends ChangeNotifier {
 
   Future<void> fetchAndSetProduct() async {
     try {
-      const url = 'https://shopify-e3c1a.firebaseio.com/orders.json';
+      final url =
+          'https://shopify-e3c1a.firebaseio.com/orders/$userId.json?auth=$authToken';
       final response = await http.get(url);
       final extractedOrders =
           json.decode(response.body) as Map<String, dynamic>;
-      if(extractedOrders==null)return;
+      if (extractedOrders == null) return;
       List<OrderItem> loadedProducts = [];
       extractedOrders.forEach((orderId, orderData) {
         OrderItem orderItem = OrderItem(

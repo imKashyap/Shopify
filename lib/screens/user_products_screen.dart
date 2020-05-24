@@ -4,7 +4,7 @@ import 'package:shopify/widgets/user_product_items.dart';
 
 import '../providers/products.dart';
 import '../widgets/app_drawer.dart';
-import 'editProductScreen.dart';
+import 'edit_Product_Screen.dart';
 
 class UserProductsScreen extends StatelessWidget {
   static const routeName = '/user-products';
