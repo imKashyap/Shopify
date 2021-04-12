@@ -2,8 +2,6 @@
 
 * This application is a basic e-commerce application built in flutter and backend in firebase.
 
-* The entire application is inspired from the course of _Maximilian Schwarzmüller_ over flutter availabe on Udemy.
-
 * The key features of the application are:
 1) User Authentication
 2) View Products. Add them to Favorite List, Cart List, Orders List.
